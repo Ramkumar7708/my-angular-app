@@ -18,18 +18,27 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: '18.x'  # Update to your required Node.js version
 
       - name: Install dependencies
         run: |
           npm install
-          npm run build
 
-      - name: 'Deploy to Azure Web App'
+      - name: Build Angular Application
+        run: |
+          npm run build  # Build the Angular app for production
+
+      - name: Zip Build Output
+        run: |
+          zip -r my-angular-app.zip dist/my-angular-app
+
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
-        id: deploy-to-webapp
         with:
-          app-name: 'NambaSite'
-          slot-name: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DB54110476094206836482DEF37ABF71 }}
-          package: 'dist/my-angular-app'
+          app-name: 'NambaSite'  # Your App Service name
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}  # Use the new publish profile
+          package: 'my-angular-app.zip'  # Path to the zipped build output
+
+      - name: Validate Deployment
+        run: |
+          curl -I https://${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net
