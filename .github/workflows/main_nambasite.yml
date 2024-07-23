@@ -51,6 +51,6 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'NambaSite'
-          slot-name: 'Production'
+          slot-name: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DB54110476094206836482DEF37ABF71 }}
-          package: .
+          package: 'dist/my-angular-app'
